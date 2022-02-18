@@ -1,5 +1,5 @@
 //
-// Created by Wangxin.Colin on 2022/2/14.
+// Created by Colin.Wang on 2022/2/14.
 //
 
 #ifndef SCC_SCC_LEXER_H_
@@ -15,18 +15,32 @@ class Lexer {
 
  public:
 
-  explicit Lexer(std::string_view source_code);
+  Lexer() = default;
+
+  explicit Lexer(std::string source_code);
 
   token_t next_token();
 
  private:
 
-  char next_char();
+  void advance();
 
-  std::string parse_number(char& ch);
+  void eat_whitespace();
 
-  std::string_view source_code_{};
+  void rollback(int position);
+
+  token_t parse_number();
+
+  token_t parse_identifier();
+
+  char peek();
+
+ private:
+
+  std::string source_code_{};
+  int src_size{};
   int cursor_{0};
+  char current_char_{};
 };
 
 }

@@ -1,22 +1,24 @@
 //
-// Created by Wangxin.Colin on 2022/2/14.
+// Created by Colin.Wang on 2022/2/14.
 //
 
 #include <iostream>
 
-#include "scc/lexer.h"
-#include "scc/token.h"
+#include "scc/compiler.h"
 
 using namespace scc;
-int main() {
-  std::string_view code = "  3   +       2    * 3 / 10 + 1.1 ";
-  Lexer lexer(code);
-  auto token = lexer.next_token();
-  while (token.type != TOKEN_TYPE::Eof) {
-    std::cout << token.repr() << std::endl;
-    token = lexer.next_token();
+
+int main(int argc, char* argv[]) {
+
+  if (argc < 2) {
+    std::cerr << "[SCC] ERROR => at least provide one source file." << std::endl;
+    exit(42);
   }
 
+  Compiler compiler(argv[1]);
 
-  return 42;
+  compiler.compile();
+
+
+  return 0;
 }
