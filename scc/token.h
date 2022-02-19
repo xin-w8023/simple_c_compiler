@@ -20,6 +20,12 @@ enum class TOKEN_TYPE : std::uint8_t {
   Equals,
   Num,
   Identifier,
+  Lparen,
+  Rparen,
+  Lbrace,
+  Rbrace,
+  Semi,
+  Comma,
   Null,
   Eof
 };
@@ -53,6 +59,12 @@ struct token_t {
       case TOKEN_TYPE::Identifier: return "Identifier";
       case TOKEN_TYPE::Eof: return "Eof";
       case TOKEN_TYPE::Equals: return "Equals";
+      case TOKEN_TYPE::Lparen: return "Lparen";
+      case TOKEN_TYPE::Rparen: return "Rparen";
+      case TOKEN_TYPE::Lbrace: return "Lbrace";
+      case TOKEN_TYPE::Rbrace: return "Rbrace";
+      case TOKEN_TYPE::Semi: return "Semi";
+      case TOKEN_TYPE::Comma: return "Comma";
       default:
         printf("Unknown token type");
         exit(42);

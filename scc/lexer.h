@@ -41,6 +41,8 @@ class Lexer {
   int src_size{};
   int cursor_{0};
   char current_char_{};
+  std::uint32_t cur_line_{};
+  std::uint32_t cur_col_{};
 };
 
 }

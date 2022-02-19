@@ -30,7 +30,7 @@ token_t Lexer::next_token() {
 
   char ch = current_char_;
   advance();
-  loc_t location{"", 0, static_cast<std::uint32_t>(cursor_ - 1)};
+  loc_t location{"", cur_line_, cur_col_ - 1};
   switch (ch) {
     case '+':
       return token_t{TOKEN_TYPE::Plus, "+", location};
@@ -42,6 +42,18 @@ token_t Lexer::next_token() {
       return token_t{TOKEN_TYPE::Slash, "/", location};
     case '=':
       return token_t{TOKEN_TYPE::Equals, "=", location};
+    case ';':
+      return token_t{TOKEN_TYPE::Semi, ";", location};
+    case '(':
+      return token_t{TOKEN_TYPE::Lparen, "(", location};
+    case ')':
+      return token_t{TOKEN_TYPE::Rparen, ")", location};
+    case '{':
+      return token_t{TOKEN_TYPE::Lbrace, "{", location};
+    case '}':
+      return token_t{TOKEN_TYPE::Rbrace, "}", location};
+    case ',':
+      return token_t{TOKEN_TYPE::Comma, ",", location};
     case '\0':
       return token_t{TOKEN_TYPE::Eof, "eof", location};
     default:
@@ -56,12 +68,13 @@ void Lexer::advance() {
     current_char_ = '\0';
   }
   current_char_ = source_code_[++cursor_];
+  cur_col_ ++;
 }
 
 token_t Lexer::parse_number() {
 
   std::string content{};
-  loc_t location{"", 0, static_cast<std::uint32_t>(cursor_)};
+  loc_t location{"", cur_line_, cur_col_};
 
   bool has_point = false;
   while (std::isdigit(current_char_) || (current_char_ == '.' && !has_point)) {
@@ -84,7 +97,7 @@ char Lexer::peek() {
 
 token_t Lexer::parse_identifier() {
 
-  loc_t location{"", 0, static_cast<std::uint32_t>(cursor_)};
+  loc_t location{"", cur_line_, cur_col_};
   std::string identifier{};
   while (std::isalpha(current_char_)) {
     identifier += current_char_;
@@ -94,8 +107,13 @@ token_t Lexer::parse_identifier() {
 }
 
 void Lexer::eat_whitespace() {
-  while (std::isspace(current_char_))
+  while (std::isspace(current_char_)) {
+    if (current_char_ == '\n') {
+      cur_line_ += 1;
+      cur_col_ = -1;
+    }
     this->advance();
+  }
 }
 
 void Lexer::rollback(int position) {
