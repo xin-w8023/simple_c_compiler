@@ -22,5 +22,5 @@ void Compiler::compile() {
 //  }
   auto ret = parser_.parse();
   AstVisitor visitor(std::move(ret));
-  visitor.visit(2);
+  visitor.visit();
 }

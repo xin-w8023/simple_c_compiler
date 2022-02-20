@@ -36,6 +36,7 @@ std::unique_ptr<AstBase> Parser::parse_assign_exp() {
 
   auto root = std::make_unique<BinaryExprNode>();
   root->op = BinaryOperator::Assignment;
+  root->type = AST_TYPE::Expression;
 
   auto token = lexer_->next_token();
   root->content = this->eat_token(TOKEN_TYPE::Equals).content;
@@ -50,70 +51,59 @@ std::unique_ptr<AstBase> Parser::parse_assign_exp() {
 }
 
 std::unique_ptr<AstBase> Parser::parse_add_exp() {
-  auto node = parse_mul_exp();
+  auto root = parse_mul_exp();
 
   auto token = lexer_->peek_next_n_token(1);
   if (token.type != TOKEN_TYPE::Plus && token.type != TOKEN_TYPE::Minus) {
-    return node;
+    return root;
   }
 
-  auto root = std::make_unique<BinaryExprNode>();
-  root->left = std::move(node);
   while (token.type == TOKEN_TYPE::Plus || token.type == TOKEN_TYPE::Minus) {
+    BinaryOperator op;
     if (token.type == TOKEN_TYPE::Plus) {
-      root->op = BinaryOperator::Plus;
+      op = BinaryOperator::Plus;
       this->eat_token(TOKEN_TYPE::Plus);
     } else {
-      root->op = BinaryOperator::Minus;
+      op = BinaryOperator::Minus;
       this->eat_token(TOKEN_TYPE::Minus);
     }
+    auto right = parse_mul_exp();
+    root = std::make_unique<BinaryExprNode>(std::move(root), op, std::move(right));
     root->content = token.content;
     root->type = AST_TYPE::Expression;
-    root->right = parse_mul_exp();
     token = lexer_->peek_next_n_token(1);
-    auto new_root = std::make_unique<BinaryExprNode>();
-    new_root->left = std::move(root);
-    new_root.swap(root);
   }
-  if (root->content.empty()) {
-    return std::move(root->left);
-  }
+
   return root;
 }
 
 std::unique_ptr<AstBase> Parser::parse_mul_exp() {
 
-  auto node = parse_basic_exp();
+  auto root = parse_basic_exp();
   auto token = lexer_->peek_next_n_token(1);
 
   if (token.type != TOKEN_TYPE::Star && token.type != TOKEN_TYPE::Slash) {
-    return node;
+    return root;
   }
-
-  auto root = std::make_unique<BinaryExprNode>();
-  root->left = std::move(node);
 
   while (token.type == TOKEN_TYPE::Star || token.type == TOKEN_TYPE::Slash) {
+    BinaryOperator op;
     if (token.type == TOKEN_TYPE::Star) {
-      root->op = BinaryOperator::Star;
+      op = BinaryOperator::Star;
       this->eat_token(TOKEN_TYPE::Star);
     } else {
-      root->op = BinaryOperator::Slash;
+      op = BinaryOperator::Slash;
       this->eat_token(TOKEN_TYPE::Slash);
     }
+
+    auto right = parse_basic_exp();
+    root = std::make_unique<BinaryExprNode>(std::move(root), op, std::move(right));
     root->content = token.content;
     root->type = AST_TYPE::Expression;
-    root->right = parse_basic_exp();
+
     token = lexer_->peek_next_n_token(1);
-    auto new_root = std::make_unique<BinaryExprNode>();
-    new_root->left = std::move(root);
-    new_root.swap(root);
   }
 
-
-  if (root->content.empty()) {
-    return std::move(root->left);
-  }
   return root;
 }
 
