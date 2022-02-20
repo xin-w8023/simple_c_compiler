@@ -8,6 +8,7 @@
 #include <string_view>
 
 #include "lexer.h"
+#include "parser.h"
 
 namespace scc {
 
@@ -20,7 +21,8 @@ class Compiler {
   void compile();
 
  private:
-  Lexer lexer_{};
+//  Lexer lexer_{};
+  Parser parser_;
 
 };
 

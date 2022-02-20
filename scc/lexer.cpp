@@ -120,3 +120,21 @@ void Lexer::rollback(int position) {
   cursor_ = position;
   current_char_ = source_code_[position];
 }
+
+token_t Lexer::peek_next_n_token(int n) {
+  int cursor = cursor_;
+  char current_char = current_char_;
+  std::uint32_t cur_line = cur_line_;
+  std::uint32_t cur_col = cur_col_;
+
+  token_t token;
+  for (int i = 0; i < n; ++i) {
+    token = this->next_token();
+  }
+  cursor_ = cursor;
+  current_char_ = current_char;
+  cur_line_ = cur_line;
+  cur_col_ = cur_col;
+
+  return token;
+}

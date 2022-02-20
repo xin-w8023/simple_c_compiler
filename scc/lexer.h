@@ -21,6 +21,8 @@ class Lexer {
 
   token_t next_token();
 
+  token_t peek_next_n_token(int n);
+
  private:
 
   void advance();
