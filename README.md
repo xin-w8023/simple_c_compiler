@@ -8,18 +8,19 @@ cd ..
 ./build/scc example/main.scc
 ```
 
-### the output will be an ast syntax tree like following.
+### the output will be an abstract syntax tree like following.
 ```markdown
-[=]:Assignment Expression
+[=]:Assignment BiExpression
 |  [x]:Variable
-|  [+]:Plus Expression
-|  |  [y]:Variable
-|  |  [*]:Star Expression
-|  |  |  [/]:Slash Expression
-|  |  |  |  [*]:Star Expression
+|  [+]:Plus BiExpression
+|  |  [-]:Negative UnExpression
+|  |  |  [y]:Variable
+|  |  [*]:Star BiExpression
+|  |  |  [/]:Slash BiExpression
+|  |  |  |  [*]:Star BiExpression
 |  |  |  |  |  [2]:Constant
 |  |  |  |  |  [3]:Constant
-|  |  |  |  [+]:Plus Expression
+|  |  |  |  [+]:Plus BiExpression
 |  |  |  |  |  [2]:Constant
 |  |  |  |  |  [4]:Constant
 |  |  |  [1]:Constant

@@ -4,23 +4,25 @@
 
 #include "common/logger.h"
 #include "io.h"
+#include "ast_visitor.h"
 #include "compiler.h"
 
 using namespace scc;
 
-Compiler::Compiler(std::string_view source_filename) {
-  auto source_code = read_file_string(source_filename);
-  auto lexer = std::make_unique<Lexer>(source_code);
-  parser_ = Parser(std::move(lexer));
+Compiler::Compiler(std::string_view filename) {
+  auto source_code = read_file_string(filename);
+  parser_ = std::make_unique<Parser>(source_code);
 }
 
 void Compiler::compile() {
-//  auto token = lexer_.next_token();
-//  while (token.type != TOKEN_TYPE::Eof) {
-//    printf("%s\n", token.repr().c_str());
-//    token = lexer_.next_token();
-//  }
-  auto ret = parser_.parse();
+  auto ret = parser_->parse();
+  AstVisitor visitor(std::move(ret));
+  visitor.visit();
+}
+
+void Compiler::compile(const std::string& source_code) {
+  auto parser = std::make_unique<Parser>(source_code);
+  auto ret = parser->parse();
   AstVisitor visitor(std::move(ret));
   visitor.visit();
 }

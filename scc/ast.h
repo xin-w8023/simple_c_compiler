@@ -5,6 +5,7 @@
 #ifndef SCC_SCC_AST_H_
 #define SCC_SCC_AST_H_
 
+#include <variant>
 #include <unordered_map>
 #include <memory>
 #include <string>
@@ -12,24 +13,35 @@
 namespace scc {
 
 enum class AST_TYPE {
-  Expression,
+  UnExpression,
+  BiExpression,
   Variable,
   Constant,
 };
 
 inline std::unordered_map<AST_TYPE, std::string> ast_type_str = {
-    {AST_TYPE::Expression, "Expression"},
+    {AST_TYPE::UnExpression, "UnExpression"},
+    {AST_TYPE::BiExpression, "BiExpression"},
     {AST_TYPE::Variable, "Variable"},
     {AST_TYPE::Constant, "Constant"}
 };
+
 enum class BinaryOperator {
+  BadOp,
   Assignment,
   Plus,
   Minus,
   Star,
   Slash
 };
-inline std::unordered_map<BinaryOperator, std::string> op_to_str = {
+
+enum class UnaryOperator {
+  BadOp,
+  Plus,
+  Minus,
+};
+
+inline std::unordered_map<BinaryOperator, std::string> biop_to_str = {
     {BinaryOperator::Assignment, "Assignment"},
     {BinaryOperator::Plus, "Plus"},
     {BinaryOperator::Minus, "Minus"},
@@ -37,55 +49,50 @@ inline std::unordered_map<BinaryOperator, std::string> op_to_str = {
     {BinaryOperator::Slash, "Slash"}
 };
 
-struct AstBase {
+inline std::unordered_map<UnaryOperator, std::string> unop_to_str = {
+    {UnaryOperator::Plus, "Positive"},
+    {UnaryOperator::Minus, "Negative"},
+};
+
+struct AstBaseNode {
   AST_TYPE type{};
   std::string content{};
 };
 
-struct BinaryExprNode : AstBase {
+struct BinaryExprNode : AstBaseNode {
   BinaryOperator op;
-  std::unique_ptr<AstBase> left;
-  std::unique_ptr<AstBase> right;
+  std::unique_ptr<AstBaseNode> left;
+  std::unique_ptr<AstBaseNode> right;
   BinaryExprNode() = default;
-  BinaryExprNode(std::unique_ptr<AstBase>&& l,
-                 BinaryOperator o,
-                 std::unique_ptr<AstBase>&& r) {
+  BinaryExprNode(std::unique_ptr<AstBaseNode>&& l,
+                 BinaryOperator bo,
+                 std::unique_ptr<AstBaseNode>&& r) {
     left = std::move(l);
     right = std::move(r);
-    op = o;
+    op = bo;
   }
 };
 
-struct ConstantExprNode : AstBase {
-  int value{};
+struct UnaryExprNode : AstBaseNode {
+  UnaryOperator op;
+  std::unique_ptr<AstBaseNode> right;
+  UnaryExprNode() = default;
+  UnaryExprNode(UnaryOperator uo,
+                std::unique_ptr<AstBaseNode>&& rhs) {
+    right = std::move(rhs);
+    op = uo;
+  }
 };
 
-class AstVisitor {
- public:
+struct ConstantExprNode : AstBaseNode {
 
-  AstVisitor() = default;
+  std::variant<int, float, std::string> value{};
 
-  AstVisitor(std::unique_ptr<AstBase>&& root);
-
-  virtual void visit();
-
-  virtual ~AstVisitor() = default;
-
- private:
-  void print_expr_ast(AstBase *root, std::string indent);
-
-  void print_var_ast(AstBase* root, std::string indent);
-
-  void print_const_ast(AstBase* root, std::string indent);
-
-  void print_ast(AstBase* root, std::string indent);
-
- protected:
-  std::unique_ptr<AstBase> root_;
+  // 0: int
+  // 1: float
+  // 2: string
+  int value_type{0};
 };
-
-
-
 
 }
 

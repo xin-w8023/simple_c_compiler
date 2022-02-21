@@ -16,14 +16,16 @@ class Compiler {
 
  public:
 
-  explicit Compiler(std::string_view source_filename);
+  explicit Compiler() = default;
+
+  explicit Compiler(std::string_view filename);
 
   void compile();
 
- private:
-//  Lexer lexer_{};
-  Parser parser_;
+  static void compile(const std::string& filename);
 
+ private:
+  std::unique_ptr<Parser> parser_;
 };
 
 }
