@@ -19,30 +19,32 @@ class Parser {
 
   Parser() = default;
 
+  explicit Parser(const std::string& source_code);
+
   explicit Parser(std::unique_ptr<Lexer> lexer);
 
-  std::unique_ptr<AstBase> parse();
+  std::unique_ptr<AstBaseNode> parse();
 
-  std::unique_ptr<AstBase> parse_exp();
+ private:
 
-  std::unique_ptr<AstBase> parse_assign_exp();
-
-  std::unique_ptr<AstBase> parse_add_exp();
-
-  std::unique_ptr<AstBase> parse_mul_exp();
+  std::unique_ptr<AstBaseNode> parse_expression(int priority = 0);
 
   // including constance and variable
-  std::unique_ptr<AstBase> parse_basic_exp();
+  std::unique_ptr<AstBaseNode> parse_basic_exp();
 
-  std::unique_ptr<AstBase> parse_constant_exp();
+  std::unique_ptr<AstBaseNode> parse_constant_exp();
 
-  std::unique_ptr<AstBase> parse_variable_exp();
+  std::unique_ptr<AstBaseNode> parse_variable_exp();
 
   token_t eat_token(TOKEN_TYPE type);
 
  private:
 
   std::unique_ptr<Lexer> lexer_;
+  int get_binary_priority(TOKEN_TYPE type);
+  BinaryOperator get_binary_operator(TOKEN_TYPE type);
+  int get_unary_priority(TOKEN_TYPE type);
+  UnaryOperator get_unary_operator(TOKEN_TYPE type);
 };
 
 }

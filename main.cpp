@@ -19,6 +19,5 @@ int main(int argc, char* argv[]) {
 
   compiler.compile();
 
-
   return 0;
 }
