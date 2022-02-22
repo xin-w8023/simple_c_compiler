@@ -9,19 +9,26 @@ cd ..
 ```
 
 ### the output will be an abstract syntax tree like following.
-```markdown
-[=]:Assignment BiExpression
-|  [x]:Variable
-|  [+]:Plus BiExpression
-|  |  [-]:Negative UnExpression
-|  |  |  [y]:Variable
-|  |  [*]:Star BiExpression
-|  |  |  [/]:Slash BiExpression
-|  |  |  |  [*]:Star BiExpression
-|  |  |  |  |  [2]:Constant
-|  |  |  |  |  [3]:Constant
-|  |  |  |  [+]:Plus BiExpression
-|  |  |  |  |  [2]:Constant
-|  |  |  |  |  [4]:Constant
-|  |  |  [1]:Constant
+```text
+BinaryExpression
+*  [x]: Variable
+*  [=]: Assignment
+*  BinaryExpression
+*  *  UnaryExpression
+*  *  *  [-]: Negative
+*  *  *  [y]: Variable
+*  *  [+]: Plus
+*  *  BinaryExpression
+*  *  *  BinaryExpression
+*  *  *  *  BinaryExpression
+*  *  *  *  *  [2]: Constant
+*  *  *  *  *  [*]: Star
+*  *  *  *  *  [3]: Constant
+*  *  *  *  [/]: Slash
+*  *  *  *  BinaryExpression
+*  *  *  *  *  [2]: Constant
+*  *  *  *  *  [+]: Plus
+*  *  *  *  *  [4]: Constant
+*  *  *  [*]: Star
+*  *  *  [1]: Constant
 ```

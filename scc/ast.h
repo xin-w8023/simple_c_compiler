@@ -19,12 +19,6 @@ enum class AST_TYPE {
   Constant,
 };
 
-inline std::unordered_map<AST_TYPE, std::string> ast_type_str = {
-    {AST_TYPE::UnExpression, "UnExpression"},
-    {AST_TYPE::BiExpression, "BiExpression"},
-    {AST_TYPE::Variable, "Variable"},
-    {AST_TYPE::Constant, "Constant"}
-};
 
 enum class BinaryOperator {
   BadOp,
@@ -39,19 +33,6 @@ enum class UnaryOperator {
   BadOp,
   Plus,
   Minus,
-};
-
-inline std::unordered_map<BinaryOperator, std::string> biop_to_str = {
-    {BinaryOperator::Assignment, "Assignment"},
-    {BinaryOperator::Plus, "Plus"},
-    {BinaryOperator::Minus, "Minus"},
-    {BinaryOperator::Star, "Star"},
-    {BinaryOperator::Slash, "Slash"}
-};
-
-inline std::unordered_map<UnaryOperator, std::string> unop_to_str = {
-    {UnaryOperator::Plus, "Positive"},
-    {UnaryOperator::Minus, "Negative"},
 };
 
 struct AstBaseNode {
