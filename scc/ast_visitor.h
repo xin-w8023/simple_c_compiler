@@ -17,22 +17,22 @@ class AstVisitor {
 
   AstVisitor() = default;
 
-  AstVisitor(std::unique_ptr<AstBaseNode>&& root);
+  explicit AstVisitor(std::unique_ptr<AstBaseNode>&& root);
 
   virtual void visit();
 
   virtual ~AstVisitor() = default;
 
  private:
-  void print_biexpr_ast(AstBaseNode *root, std::string indent);
+  void visit_binary_expr(AstBaseNode *root, std::string indent);
 
-  void print_unexpr_ast(AstBaseNode *root, std::string indent);
+  void visit_unary_expr(AstBaseNode *root, std::string indent);
 
-  void print_var_ast(AstBaseNode* root, std::string indent);
+  static void visit_variable_expr(AstBaseNode* root, const std::string& indent);
 
-  void print_const_ast(AstBaseNode* root, std::string indent);
+  static void visit_const_expr(AstBaseNode* root, const std::string& indent);
 
-  void print_ast(AstBaseNode* root, std::string indent);
+  void visit_expr(AstBaseNode* root, const std::string& indent = "");
 
  protected:
   std::unique_ptr<AstBaseNode> root_;
